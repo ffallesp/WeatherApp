@@ -1,0 +1,170 @@
+﻿@model WeatherApp.Models.WeatherDetailsModel
+
+@{
+    ViewBag.Title = "Ticket Details";
+}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet" type="text/css" />
+<h2>Ticket Details</h2>
+
+<style>
+    .temp {
+        display: inline-block;
+        vertical-align: top;
+        width: 50%;
+    }
+
+    .fns2 {
+        display: inline-block;
+        padding-left: 10px;
+        vertical-align: top;
+    }
+
+    .imgW {
+        display: inline-block;
+        height: 60px;
+        margin-top: unset;
+        vertical-align: top;
+        width: 60px;
+    }
+
+    .tmp {
+        letter-spacing: normal;
+        color: black;
+        vertical-align: top;
+        font-family: Google Sans, Arial, sans-serif;
+        font-size: 40px;
+        line-height: 60px;
+    }
+
+    .temp2 {
+        text-align: right;
+        display: inline-block;
+        width: 40%;
+    }
+
+    .unit {
+        color: black;
+        display: inline-block;
+        font-size: 16px;
+        line-height: 24px;
+        margin-top: 6px;
+        padding-left: 6px;
+        vertical-align: top;
+    }
+
+    .det {
+        color: black;
+        display: inline-block;
+        font-size: 12px;
+        line-height: 16px;
+        padding-left: 9px;
+        padding-top: 6px;
+    }
+
+    .text1 {
+        color: black;
+        font-size: 22px;
+        line-height: 26px;
+        font-family: Google Sans,arial,sans-serif;
+        font-weight: 400;
+    }
+    .mid {
+        display: flex;
+        justify-content: center;
+        padding-top: 50px;
+    }
+</style>
+
+@if (ViewBag.RetrieveWeatherError) {
+    <div>
+        <span style="color:red;">Error en el servidor:</span> <h4>@ViewBag.MessageError</h4>
+    </div>
+}
+
+@if (!ViewBag.RetrieveWeatherError) {
+
+    <div class="row">
+        <div>
+            <hr />
+            <dl class="dl-horizontal">
+            </dl>
+            <div class="col-md-5">
+                <h2 style="justify-content:center;">@Model.Ticket.Origin</h2>
+                <div>@Model.Ticket.Ori_name</div>
+                <hr />
+                <div>
+                    <div class="temp">
+                        <img class="imgW" width="60" src=@Html.Raw("https://openweathermap.org/img/wn/"+Model.Weather_ori.weather[0].icon+"@2x.png") />
+                        <div class="fns2" aria-level="3" role="heading">
+                            <div>
+                                <div class="tmp">
+                                    <span>@Html.Raw(String.Format("{0:0.##}", Convert.ToDouble(Model.Weather_ori.main.temp) - 273.15))</span>
+                                    <div class="unit">
+                                        <span>°C</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="det">
+                            <div>Humidity: <span>@Model.Weather_ori.main.humidity %</span></div>
+                            <div>Wind: <span>@Model.Weather_ori.wind.speed m/s</span></div>
+                        </div>
+                    </div>
+                    <div class="temp2">
+                        <span aria-level="3" role="heading">
+                            <div class="text1">@Model.Weather_ori.name, @Model.Weather_ori.sys.country</div>
+                            <div>@Html.Raw(DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(Model.Weather_ori.dt) + Convert.ToInt64(Model.Weather_ori.timezone)).ToString("dddd, HH:mm"))</div>
+                            <div>@Model.Weather_ori.weather[0].main (@Model.Weather_ori.weather[0].description)</div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="mid"><i class="fa fa-plane fa-3x"></i></div>
+                <div class="det mid" style="padding-top:20px;">
+                    <div>Airline: @Model.Ticket.Airline </div><br />
+                </div>
+                <div class="det mid" style="padding-top:2px;">
+                    <div>Flight Number: @Model.Ticket.Fligh_num</div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <h2>@Model.Ticket.Destination</h2>
+                <div>@Model.Ticket.Dst_name</div>
+                <hr />
+                <div>
+                    <div class="temp">
+                        <img class="imgW" width="60" src=@Html.Raw("https://openweathermap.org/img/wn/"+Model.Weather_dst.weather[0].icon+"@2x.png") />
+                        <div class="fns2" aria-level="3" role="heading">
+                            <div>
+                                <div class="tmp">
+                                    <span>@Html.Raw(String.Format("{0:0.##}", Convert.ToDouble(Model.Weather_dst.main.temp) - 273.15))</span>
+                                    <div class="unit">
+                                        <span>°C</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="det">
+                            <div>Humidity: <span>@Model.Weather_dst.main.humidity %</span></div>
+                            <div>Wind: <span>@Model.Weather_dst.wind.speed m/s</span></div>
+                        </div>
+                    </div>
+                    <div class="temp2">
+                        <span aria-level="3" role="heading">
+                            <div class="text1">@Model.Weather_dst.name, @Model.Weather_dst.sys.country</div>
+                            <div>@Html.Raw(DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(Model.Weather_dst.dt) + Convert.ToInt64(Model.Weather_dst.timezone)).ToString("dddd, HH:mm"))</div>
+                            <div>@Model.Weather_dst.weather[0].main (@Model.Weather_dst.weather[0].description)</div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <p>
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}
+
+

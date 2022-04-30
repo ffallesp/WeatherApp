@@ -1,0 +1,51 @@
+﻿@{
+    ViewBag.Title = "Home";
+}
+@model PagedList.IPagedList<WeatherApp.Models.TicketModel>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+<br />
+@if (ViewBag.RetrieveWeatherError) {
+    <div>
+        <span style="color:red;">Error en el servidor:</span> <h4>@ViewBag.MessageError</h4>
+    </div>  
+}
+<h2>Ticket List</h2>
+<br />
+<div class="row">
+    @using (Html.BeginForm("Index", "Home", FormMethod.Get)) {
+        <p>
+            Find by flight number: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+            <input type="submit" value="Search" />
+        </p>
+    }
+    <table class="table">
+        <tr>
+            <th>Origin</th>
+            <th>Destination</th>
+            <th>Airline</th>
+            <th>Flight Num</th>
+            <th>Origin Weather</th>
+            <th>Destination Weather</th>
+            <th> </th>
+        </tr>
+        @foreach (var item in Model) {
+            <tr>
+                <td>@item.Origin</td>
+                <td>@item.Destination</td>
+                <td>@item.Airline</td>
+                <td>@item.Fligh_num</td>
+                <td><img width="50" src=@Html.Raw("https://openweathermap.org/img/wn/"+item.Ori_weather_icon+"@2x.png") title="@item.Ori_weather" /></td>
+                <td><img width="50" src=@Html.Raw("https://openweathermap.org/img/wn/"+item.Dst_weather_icon+"@2x.png") title="@item.Dst_weather" /></td>
+                <td>
+                    @Html.ActionLink("View Weather Details", "Details", new { item.Origin, item.Destination, item.Airline, item.Fligh_num, item.Ori_lat, item.Ori_lon, item.Dst_lat, item.Dst_lon, item.Ori_name, item.Dst_name })
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+
+<br />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+@Html.PagedListPager(Model, page => Url.Action("Index",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
