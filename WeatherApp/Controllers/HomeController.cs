@@ -11,7 +11,6 @@ using WeatherApp.Classes;
 namespace WeatherApp.Controllers {
     public class HomeController : Controller {
         private WeatherHelper Weather = new WeatherHelper();
-
         /// <summary>
         /// Funcion principal, consulta los registros y los envia a la vista.
         /// </summary>
@@ -25,16 +24,19 @@ namespace WeatherApp.Controllers {
             } else {
                 searchString = currentFilter; 
             }
-            int pageSize = 7;
+            int pageSize = 10;
             int pageNumber = (page ?? 1);
             ViewBag.CurrentFilter = searchString;
             List<TicketModel> records = new List<TicketModel>();
             try {
                 records = Weather.RetrieveData(Server.MapPath("./") + "challenge_dataset.csv", searchString);
                 IPagedList<TicketModel> listaTickets = records.ToPagedList(pageNumber, pageSize);
-                for (int i = 0; i < listaTickets.Count; i++) {
-                    await Weather.GetWeatherAsync(listaTickets[i], "en");
+                List<Task> t = new List<Task>();
+                var Cache = HttpContext.Application["Cache"] as Dictionary<string, ResponseWeatherModel>;
+                foreach (var i in listaTickets) {
+                    t.Add(Task.Run(() => Weather.GetWeatherAsync(i, "en", Cache)));
                 }
+                await Task.WhenAll(t);
                 ViewBag.RetrieveWeatherError = false;
             } catch(FileNotFoundException ex) {
                 ViewBag.RetrieveWeatherError = true;

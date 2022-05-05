@@ -11,7 +11,6 @@ namespace WeatherApp.Classes {
     /// </summary>
     public class WeatherHelper {
         private OpenWeatherAPI api = new OpenWeatherAPI();
-
         /// <summary>
         /// Método para consultar los datos del archivo. Los convierte a una lista del tipo TicketModel.
         /// Puede ser filtrada o no.
@@ -41,7 +40,28 @@ namespace WeatherApp.Classes {
         /// <param name="ticket">Modelo que contiene latitud y longitud.</param>
         /// <param name="lang">Parametro para determinar el idioma de los resultados obtenidos.</param>
         /// <returns></returns>
-        public async Task GetWeatherAsync(TicketModel ticket, string lang) {
+        public async Task GetWeatherAsync(TicketModel ticket, string lang, Dictionary<string, ResponseWeatherModel> Cache) {
+            //if (!Cache.ContainsKey(ticket.Ori_iata)) {
+            //    var json_ori = await api.GetWeather(ticket.Ori_lat, ticket.Ori_lon, lang);
+            //    ResponseWeatherModel response1 = JsonConvert.DeserializeObject<ResponseWeatherModel>(json_ori);
+            //    ticket.Ori_weather = response1.weather[0].main;
+            //    ticket.Ori_weather_icon = response1.weather[0].icon;
+            //    Cache.Add(ticket.Ori_iata, response1);
+            //} else {
+            //    ticket.Ori_weather = Cache[ticket.Ori_iata].weather[0].main;
+            //    ticket.Ori_weather_icon = Cache[ticket.Ori_iata].weather[0].icon;
+            //}
+
+            //if (!Cache.ContainsKey(ticket.Dst_iata)) {
+            //    var json_dst = await api.GetWeather(ticket.Dst_lat, ticket.Dst_lon, lang);
+            //    ResponseWeatherModel response2 = JsonConvert.DeserializeObject<ResponseWeatherModel>(json_dst);
+            //    ticket.Dst_weather = response2.weather[0].main;
+            //    ticket.Dst_weather_icon = response2.weather[0].icon;
+            //    Cache.Add(ticket.Dst_iata, response2);
+            //} else {
+            //    ticket.Dst_weather = Cache[ticket.Dst_iata].weather[0].main;
+            //    ticket.Dst_weather_icon = Cache[ticket.Dst_iata].weather[0].icon;
+            //}
             var json_ori = await api.GetWeather(ticket.Ori_lat, ticket.Ori_lon, lang);
             var json_dst = await api.GetWeather(ticket.Dst_lat, ticket.Dst_lon, lang);
             ResponseWeatherModel response1 = JsonConvert.DeserializeObject<ResponseWeatherModel>(json_ori);
